@@ -10,8 +10,15 @@ class Block():
         self.blockCount = blockCount
         self.timestamp = time.time()
         self.signature = ''
+    
+    # Create the genesis block
+    @staticmethod
+    def genesis():
+        genesisBlock = Block([], 'genesisHash', 'genesisSignature', 0)
+        genesisBlock.timestamp = 0
+        return genesisBlock
 
-    # Display object in json on pprint
+    # Display object in json representation on pprint
     def toJson(self):
         data = {}
         data['lastHash'] = self.lastHash
