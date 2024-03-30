@@ -5,55 +5,42 @@ from TransactionPool import TransactionPool
 from Block import Block
 from Blockchain import Blockchain
 from Utils import Utils
+from AccountModel import AccountModel
 
 if __name__ == '__main__':
-    sender = 'sender'
-    receiver  = 'receiver'
-    amount = 1
-    type= 'TRANSFER'
-    transaction = Transaction(sender, receiver, amount, type)
 
-    wallet  = Wallet()
-    
-    #test fraudulent wallet by replacing wallet in the signature valid method
-    fraudulentWallet = Wallet()
+  blockChain = Blockchain()
+  pool = TransactionPool()
 
-    transaction = wallet.createTransaction(receiver, amount, type)
+  alice = Wallet()
+  bob = Wallet()
+  exchange = Wallet()
+  forger = Wallet()
 
-    blockchain = Blockchain()
+  exchangeTransaction = exchange.createTransaction(alice.publicKeyString(), 10, 'EXCHANGE')
 
-    #EXAMPLE 1: Check if transaction is unique
-    pool = TransactionPool()
-    if pool.transactionExists(transaction) == False:
-        pool.addTransaction(transaction)
-    if pool.transactionExists(transaction) == False:
-        pool.addTransaction(transaction)
-    
+  if not pool.transactionExists(exchangeTransaction):
+    pool.addTransaction(exchangeTransaction)
 
-    #EXAMPLE 2: #Check if signature is valid
-    #signatureValid = Wallet.signatureValid(transaction.payload(), transaction.signature, fraudulentWallet.publicKeyString())
+  coveredTransaction = blockChain.getCoveredTransactions(pool.transactions)
+  lastHash = Utils.hash(blockChain.blocks[-1].payload()).hexdigest()
+  blockCount = blockChain.blocks[-1].blockCount + 1
+  blockOne = forger.createBlock(coveredTransaction, lastHash, blockCount)
+  blockChain.addBlock(blockOne)
 
-    #EXAMPLE 3: check whether signature is valid or not
-    #signatureValid = Wallet.signatureValid(block.payload(), block.signature, wallet.publicKeyString())
-    #pprint.pprint(signatureValid)
-    #pprint.pprint(block.toJson())
+  #Alice wants to send 5 tokens to bob
+  transaction = alice.createTransaction(bob.publicKeyString(), 5, 'TRANSFER')
 
-    #EXAMPLE 4: get last block hash & blockcount
-    # Change blockcount or lastHash below to add a wrong block to the blockchain and generate an error.
-    lastHash = Utils.hash(blockchain.blocks[-1].payload()).hexdigest()
-    blockCount = blockchain.blocks[-1].blockCount + 1
-    block = wallet.createBlock(pool.transactions, lastHash, blockCount)
+  if not pool.transactionExists(transaction):
+    pool.addTransaction(transaction)
 
-    if not blockchain.lastBlockHashValid(block):
-        pprint.pprint("Last Block Hash is not valid")
-    
-    if not blockchain.blockCountValid(block):
-        pprint.pprint("Last Block Count is not valid")
-    
-    # Add block to blockchain
-    if blockchain.lastBlockHashValid(block) and blockchain.blockCountValid(block):
-        blockchain.addBlock(block)
+  coveredTransaction = blockChain.getCoveredTransactions(pool.transactions)
+  lastHash = Utils.hash(blockChain.blocks[-1].payload()).hexdigest()
+  blockCount = blockChain.blocks[-1].blockCount + 1
+  blockTwo = forger.createBlock(coveredTransaction, lastHash, blockCount)
+  blockChain.addBlock(blockTwo)
 
-    pprint.pprint(blockchain.toJson())
+
+  pprint.pprint(blockChain.toJson())
   
-   
+

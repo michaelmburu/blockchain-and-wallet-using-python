@@ -4,7 +4,7 @@ import copy
 class Block():
 
     def __init__(self, transactions, lastHash, forger, blockCount):
-        self.transactions = transactions
+        self.transactions = transactions if transactions is not None else []
         self.lastHash = lastHash
         self.forger = forger
         self.blockCount = blockCount

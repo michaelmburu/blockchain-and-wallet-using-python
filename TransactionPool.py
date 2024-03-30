@@ -16,4 +16,16 @@ class  TransactionPool():
                 return True
         return False
 
+    # Remove transaction from pool
+    def RemoveFromPool(self, transactions):
+        newPoolTransactions = []
+        for poolTransaction in self.transactions:
+            insert = True
+            for transaction in transactions:
+                if poolTransaction.equals(transaction):
+                    insert = False
+            if insert  == True:
+                newPoolTransactions.append(poolTransaction)
+        self.transactions = newPoolTransactions
+
     
