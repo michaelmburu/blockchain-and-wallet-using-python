@@ -1,5 +1,6 @@
 from Crypto.Hash import SHA256
 import json
+import jsonpickle
 
 class Utils():
 
@@ -10,3 +11,10 @@ class Utils():
         dataHash = SHA256.new(dataBytes)
         return dataHash
 
+    @staticmethod
+    def encode(objectToEncode):
+        return jsonpickle.encode(objectToEncode, unpicklable=True)
+
+    @staticmethod
+    def decode(objectToDecode):
+        return jsonpickle.decode(objectToDecode)
