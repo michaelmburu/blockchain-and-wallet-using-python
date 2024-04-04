@@ -8,6 +8,13 @@ class Wallet:
 
     def __init__(self):
         self.keyPair = RSA.generate(2048)
+    
+    # Create key from key file
+    def fromKey(self, file):
+        key = ''
+        with open(file, 'r') as keyfile:
+            key = RSA.importKey(keyfile.read())
+        self.keyPair = key
 
     # Sign transactions
     def sign(self, data):

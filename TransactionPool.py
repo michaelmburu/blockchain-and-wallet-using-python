@@ -17,7 +17,7 @@ class  TransactionPool():
         return False
 
     # Remove transaction from pool
-    def RemoveFromPool(self, transactions):
+    def removeFromPool(self, transactions):
         newPoolTransactions = []
         for poolTransaction in self.transactions:
             insert = True
@@ -27,5 +27,13 @@ class  TransactionPool():
             if insert  == True:
                 newPoolTransactions.append(poolTransaction)
         self.transactions = newPoolTransactions
+    
+    # Check if the threshold of transactions in the pool is reached and select validators to forge a new block
+    def forgerRequired(self):
+        if len(self.transactions) >= 1:
+            return True
+        else:
+            return False
+    
 
     

@@ -13,7 +13,7 @@ class Transaction():
         self.timestamp = time.time()
         self.signature = ''
 
-    # Parse to Json
+    # Parse Object to Json
     def toJson(self):
         return self.__dict__
 
@@ -27,6 +27,7 @@ class Transaction():
         jsonRepresentation['signature'] = ''
         return jsonRepresentation
 
+    # Check if a transaction already exists
     def equals(self, transaction):
         if self.id == transaction.id:
             return True
